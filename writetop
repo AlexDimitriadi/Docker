@@ -1,0 +1,9 @@
+#!/bin/bash
+#autoupdatetop
+top -n1 -b > /var/www/content1/html/top.html
+
+cp /var/www/content2/html/index2.html /var/www/content1/html/cpu.html
+
+awk '$1=="%Cpu(s):" {print > "/var/www/content1/html/top.txt"}' /var/www/content1/html/top.html
+
+sed -i.bak -e '15r /var/www/content1/html/top.txt' /var/www/content1/html/cpu.html

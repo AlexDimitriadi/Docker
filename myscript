@@ -1,0 +1,25 @@
+#!/bin/bash
+# This is a comment
+cd /var/log/nginx/
+find . -type f -name '*.log' -exec cat {} + >> /var/www/content1/html/access.log
+
+file=/var/www/content1/html/access.log
+minimumsize=500000
+actualsize=$(wc -c <"$file")
+if [ $actualsize -ge $minimumsize ]; then
+   {
+#sed -i -e 's/404/404/w /var/www/content1/html/404.log' /var/www/content1/html/access.log
+
+
+awk '($9>=400)&& ($9<=499) {print >> "/var/www/content1/html/400.log"}
+($9>=500)&& ($9<=599) {print >> "/var/www/content1/html/500.log"}' /var/www/content1/html/access.log
+#awk '$9=="404" {print >> "/var/www/content1/html/404.log"}
+#$9=="301" {print >> "/var/www/content1/html/301.log"}' /var/www/content1/html/access.log
+cd /var/www/content1/html/
+find . -name "*access.log*" -type 'f' -size +500k -delete 
+echo "Succsess - $(date)"  >> /var/www/content1/html/date.log
+}
+else
+	echo  
+fi
+
